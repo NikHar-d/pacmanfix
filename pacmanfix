@@ -1,0 +1,16 @@
+#!/bin/bash
+if [[ "$1" == "--install" ]]; then
+	sudo cp "$0" /usr/bin/pacmanfix
+	sudo rm "$0"
+	exit
+fi
+
+if [ -n "$1" ]; then
+	sudo reflector --latest 10 --sort rate --country "$1" --save /etc/pacman.d/mirrorlist || exit
+else
+	sudo reflector --latest 10 --sort rate --save /etc/pacman.d/mirrorlist || exit
+fi
+sudo pacman -Sy archlinux-keyring || exit
+sudo pacman-key --init || exit
+sudo pacman-key --populate archlinux || exit
+sudo pacman -Syy || exit
